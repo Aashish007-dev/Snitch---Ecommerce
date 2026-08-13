@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '../hook/useAuth';
 import { useNavigate } from 'react-router';
+import ContinueWithGoogle from '../components/ContinueWithGoogle';
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -119,6 +120,8 @@ const Login = () => {
                   <button className="w-full bg-[#ffd700] text-[#131313] font-semibold text-[16px] tracking-wide py-4 rounded hover:bg-[#e9c400] active:scale-[0.98] transition-all duration-200" type="submit">
                     Sign In
                   </button>
+
+                  <ContinueWithGoogle />
                   
                   <div className="text-center mt-[12px]">
                     <span className="text-[16px] text-[#d0c6ab]">Don't have an account? </span>

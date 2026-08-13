@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '../hook/useAuth';
 import { useNavigate } from 'react-router';
+import ContinueWithGoogle from '../components/ContinueWithGoogle';
 
 const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -139,13 +140,15 @@ const Register = () => {
                   <label className="text-[14px] font-medium text-[#e5e2e1] cursor-pointer select-none" htmlFor="isSeller">Register as Seller</label>
                 </div>
                 
-                <a className='text-sm text-[#FFD700] cursor-pointer select-none transition-colors duration-300 ' href="/api/auth/google">Continue with Google</a>
+                
 
                 {/* Actions */}
                 <div className="pt-[12px] flex flex-col gap-[12px]">
                   <button className="w-full bg-[#ffd700] text-[#131313] font-semibold text-[16px] tracking-wide py-4 rounded hover:bg-[#e9c400] active:scale-[0.98] transition-all duration-200" type="submit">
                     Create Account
                   </button>
+
+                  <ContinueWithGoogle />
                   
                   <div className="text-center mt-[12px]">
                     <span className="text-[16px] text-[#d0c6ab]">Already have an account? </span>
