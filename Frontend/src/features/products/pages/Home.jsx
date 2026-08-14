@@ -12,6 +12,7 @@ const ProductCard = ({ product }) => {
     const [imgIdx, setImgIdx] = useState(0)
     const [hovered, setHovered] = useState(false)
     const images = product.images ?? []
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (!hovered || images.length <= 1) return
@@ -37,7 +38,7 @@ const ProductCard = ({ product }) => {
             }}
         >
             {/* Image */}
-            <div style={{ position: 'relative', aspectRatio: '3/4', overflow: 'hidden', background: '#f5f3f0' }}>
+            <div onClick={() => navigate(`/product/${product._id}`)} style={{ position: 'relative', aspectRatio: '3/4', overflow: 'hidden', background: '#f5f3f0' }}>
                 {images.length > 0 ? (
                     <>
                         <img
@@ -92,7 +93,7 @@ const ProductCard = ({ product }) => {
             </div>
 
             {/* Info */}
-            <div style={{ padding: '16px 18px 20px', flex: 1, display: 'flex', flexDirection: 'column', gap: 6 }}>
+            <div onClick={() => navigate(`/product/${product._id}`)} style={{ padding: '16px 18px 20px', flex: 1, display: 'flex', flexDirection: 'column', gap: 6 }}>
                 <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 18, fontWeight: 400, color: '#1b1c1a', margin: 0, lineHeight: 1.3 }}>
                     {product.title}
                 </h2>

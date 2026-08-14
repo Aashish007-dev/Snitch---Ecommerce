@@ -1,6 +1,6 @@
 import express from 'express';
 import { authenticateSeller } from '../middlewares/auth.middleware.js';
-import { createProductController, getAllProductsController, getSellerProductsController } from '../controllers/product.controller.js';
+import { createProductController, getAllProductsController, getProductDetailsController, getSellerProductsController } from '../controllers/product.controller.js';
 import multer from 'multer';
 import { createProductValidator } from '../validator/product.validator.js';
 
@@ -30,7 +30,13 @@ productRouter.get("/seller", authenticateSeller, getSellerProductsController);
 // @description Get all products 
 // @access Public
 
-productRouter.get("/", getAllProductsController)
+productRouter.get("/", getAllProductsController);
+
+// @route GET /api/products/detail/:id
+// @description Get product dails by ID
+// @access Public
+
+productRouter.get("/detail/:id", getProductDetailsController);
 
 
 export default productRouter;
