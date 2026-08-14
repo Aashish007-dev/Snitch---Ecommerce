@@ -1,167 +1,307 @@
 import React, { useState } from 'react';
-import { useAuth } from '../hook/useAuth';
+import { useAuth } from "../hook/useAuth";
 import { useNavigate } from 'react-router';
 import ContinueWithGoogle from '../components/ContinueWithGoogle';
 
 const Register = () => {
-  const [showPassword, setShowPassword] = useState(false);
+    const { handleRegister } = useAuth();
+    const navigate = useNavigate();
 
-  const { handleRegister } = useAuth();
-  const navigate = useNavigate();
-  
-  // Two-way binding state
-  const [formData, setFormData] = useState({
-    fullname: '',
-    email: '',
-    contact: '',
-    password: '',
-    isSeller: false
-  });
-
-  const togglePassword = () => {
-    setShowPassword(!showPassword);
-  };
-
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : value
-    }));
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-     await handleRegister({
-      fullname: formData.fullname,
-      email: formData.email,
-      contact: formData.contact,
-      password: formData.password,
-      isSeller: formData.isSeller
+    const [formData, setFormData] = useState({
+        fullName: '',
+        contactNumber: '',
+        email: '',
+        password: '',
+        isSeller: false
     });
 
-    navigate("/")
+    const handleChange = (e) => {
+        const { name, value, type, checked } = e.target;
+        setFormData(prev => ({ ...prev, [name]: type === 'checkbox' ? checked : value }));
+    };
 
-  }
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        await handleRegister({
+            email: formData.email,
+            contact: formData.contactNumber,
+            password: formData.password,
+            isSeller: formData.isSeller,
+            fullname: formData.fullName
+        });
+        navigate("/");
+    };
 
-  return (
-    <div className="min-h-screen flex flex-col antialiased bg-[#131313] text-[#e5e2e1] font-sans">
-      <main className="flex-grow flex w-full">
-        {/* Left Side: Branding / Editorial */}
-        <div className="hidden lg:flex w-1/2 relative bg-[#0e0e0e]">
-          {/* Full Bleed Image Background */}
-          <img 
-            alt="High fashion model in dark suit with golden hour lighting" 
-            className="absolute inset-0 w-full h-full object-cover opacity-80 mix-blend-luminosity" 
-            src="https://lh3.googleusercontent.com/aida-public/AB6AXuCqZg2Wl-GLzi2YVb0YxvcF88VCOLHI2pHNlxkIQhTGlW_nSGQdt4tmgAELBj791OyUHLXIoLwwSiCHSzMH_z5YlLuUe6Q4no88QFTKf77ikHdDK3HywDab6OOWxfbY8Yok90ZCgSRZfI4vhT8Wr6nxVLLqjNHGL1MC7NmPU2tEpTeikR6W3mkFS2QYCVV5TdnTR9XiJfH8Q97fueVi-oZ_4k4n4d0UZv2qvHE__GCareqEriuO5SMWMAgluem9Y8899L1YTX1uNtw"
-          />
-          {/* Dark Overlay for Noir Aesthetic */}
-          <div className="absolute inset-0 bg-gradient-to-r from-[#0e0e0e]/90 to-[#0e0e0e]/40"></div>
-          {/* Content Area */}
-          <div className="relative z-10 flex flex-col justify-between p-[40px] w-full h-full">
-            {/* Logo */}
-            <div className="w-48">
-              <h1 className="text-[32px] font-bold text-[#ffd700] tracking-tight filter drop-shadow-md">SNITCH</h1>
-            </div>
-            {/* Editorial Copy */}
-            <div className="mb-[48px] max-w-md">
-              <h1 className="text-[48px] font-bold text-[#ffd700] mb-[12px] tracking-tight leading-[1.1]">
-                Define Your<br/>Signature.
-              </h1>
-              <p className="text-[18px] text-[#d0c6ab] leading-[1.6]">
-                Join an exclusive collective of fashion connoisseurs. Access limited drops, personalized curation, and a refined shopping experience.
-              </p>
-            </div>
-          </div>
-        </div>
-        
-        {/* Right Side: Registration Form */}
-        <div className="w-full lg:w-1/2 flex items-center justify-center p-[40px] bg-[#131313] relative overflow-hidden">
-          {/* Subtle Radial Backdrop */}
-          <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(circle at center, rgba(255, 215, 0, 0.05) 0%, transparent 70%)' }}></div>
-          <div className="w-full max-w-[480px] relative z-10">
-            {/* Mobile Logo (Visible only on small screens) */}
-            <div className="lg:hidden mb-[48px] flex justify-center w-full">
-              <h1 className="text-[32px] font-bold text-[#ffd700] tracking-tight">SNITCH</h1>
-            </div>
-            
-            {/* Header */}
-            <div className="mb-[48px] text-center lg:text-left">
-              <h2 className="text-[32px] font-semibold text-[#e5e2e1] mb-[8px] tracking-tight">Create Account</h2>
-              <p className="text-[16px] text-[#d0c6ab]">Enter your details to join Snitch Premium.</p>
-            </div>
-            
-            {/* Form Container */}
-            <div className="bg-[#1c1b1b] border border-[#353534] rounded-xl p-[24px] relative">
-              {/* Progress Line */}
-              <div className="absolute top-0 left-0 w-1/3 h-[2px] bg-[#ffd700] rounded-t-xl"></div>
-              
-              <form className="space-y-[24px] flex flex-col" onSubmit={handleSubmit}>
-                {/* Full Name */}
-                <div className="flex flex-col gap-[12px]">
-                  <label className="text-[14px] font-medium text-[#e5e2e1] tracking-wide" htmlFor="fullName">Full Name</label>
-                  <input className="w-full bg-[#131313] border border-[#353534] rounded text-[#e5e2e1] px-4 py-3 text-[16px] focus:outline-none focus:ring-0 focus:border-[#ffd700] focus:shadow-[0_0_5px_rgba(255,215,0,0.2)] transition-all placeholder:text-zinc-600" id="fullname" name="fullname" placeholder="John Doe" type="text" value={formData.fullname} onChange={handleChange} />
-                </div>
-                
-                {/* Email Address */}
-                <div className="flex flex-col gap-[12px]">
-                  <label className="text-[14px] font-medium text-[#e5e2e1] tracking-wide" htmlFor="email">Email Address</label>
-                  <input className="w-full bg-[#131313] border border-[#353534] rounded text-[#e5e2e1] px-4 py-3 text-[16px] focus:outline-none focus:ring-0 focus:border-[#ffd700] focus:shadow-[0_0_5px_rgba(255,215,0,0.2)] transition-all placeholder:text-zinc-600" id="email" name="email" placeholder="john@example.com" type="email" value={formData.email} onChange={handleChange} />
-                </div>
-                
-                {/* Contact Number */}
-                <div className="flex flex-col gap-[12px]">
-                  <label className="text-[14px] font-medium text-[#e5e2e1] tracking-wide" htmlFor="contact">Contact Number</label>
-                  <input className="w-full bg-[#131313] border border-[#353534] rounded text-[#e5e2e1] px-4 py-3 text-[16px] focus:outline-none focus:ring-0 focus:border-[#ffd700] focus:shadow-[0_0_5px_rgba(255,215,0,0.2)] transition-all placeholder:text-zinc-600" id="contact" name="contact" placeholder="+1 (555) 000-0000" type="tel" value={formData.contact} onChange={handleChange} />
-                </div>
-                
-                {/* Password */}
-                <div className="flex flex-col gap-[12px]">
-                  <label className="text-[14px] font-medium text-[#e5e2e1] tracking-wide" htmlFor="password">Password</label>
-                  <div className="relative w-full border border-[#353534] rounded bg-[#131313] focus-within:border-[#ffd700] focus-within:shadow-[0_0_5px_rgba(255,215,0,0.2)] transition-all">
-                    <input className="w-full bg-transparent border-none text-[#e5e2e1] px-4 py-3 text-[16px] focus:outline-none focus:ring-0 placeholder:text-zinc-600 pr-12" id="password" name="password" placeholder="••••••••" type={showPassword ? "text" : "password"} value={formData.password} onChange={handleChange} />
-                    <button className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#d0c6ab] hover:text-[#ffd700] transition-colors focus:outline-none" onClick={togglePassword} type="button">
-                      {showPassword ? (
-                        <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor"><path d="M480-320q75 0 127.5-52.5T660-500q0-75-52.5-127.5T480-680q-75 0-127.5 52.5T300-500q0 75 52.5 127.5T480-320Zm0-72q-45 0-76.5-31.5T372-500q0-45 31.5-76.5T480-608q45 0 76.5 31.5T588-500q0 45-31.5 76.5T480-392Zm0 192q-146 0-266-81.5T40-500q54-137 174-218.5T480-800q146 0 266 81.5T920-500q-54 137-174 218.5T480-200Zm0-300Zm0 220q113 0 207.5-59.5T832-500q-50-101-144.5-160.5T480-720q-113 0-207.5 59.5T88-500q50 101 144.5 160.5T480-280Z"/></svg>
-                      ) : (
-                        <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor"><path d="m644-428-58-58q9-47-27-88t-93-32l-58-58q17-8 34.5-12t37.5-4q75 0 127.5 52.5T660-500q0 20-4 37.5T644-428Zm128 126-58-56q38-29 67.5-63.5T832-500q-50-101-143.5-160.5T480-720q-29 0-57 4t-55 12l-62-62q41-17 84-25.5t90-8.5q146 0 266 81.5T920-500q-23 59-60.5 109.5T772-302Zm20 246L624-224q-52 31-112 47.5T396-160q-146 0-266-81.5T40-500q21-53 53-98.5t73-81.5L56-792l56-56 736 736-56 56ZM222-624q-29 26-53 57t-41 67q50 101 143.5 160.5T396-280q20 0 39-2.5t39-5.5l-36-38q-11 3-21 4.5t-21 1.5q-75 0-127.5-52.5T216-500q0-29 14-53t38-41l-46-30Zm316 316-22-22q-9 14-23.5 22T460-300q-47-9-88-27t-32-93l-22-22q-4 18-4 37.5 0 75 52.5 127.5T460-225q20 0 37.5-4t34.5-12Zm-142-142Zm84-84Z"/></svg>
-                      )}
-                    </button>
-                  </div>
-                </div>
-                
-                {/* Register as Seller Checkbox */}
-                <div className="flex items-center gap-[12px] pt-[8px]">
-                  <div className="relative flex items-center justify-center">
-                    <input className="peer appearance-none w-5 h-5 bg-[#131313] border border-[#ffd700] rounded cursor-pointer checked:bg-[#ffd700] transition-colors focus:outline-none focus:ring-2 focus:ring-[#ffd700]/30 focus:ring-offset-1 focus:ring-offset-[#1c1b1b]" id="isSeller" name="isSeller" type="checkbox" checked={formData.isSeller} onChange={handleChange} />
-                    <svg className="absolute text-[#121212] w-4 h-4 pointer-events-none opacity-0 peer-checked:opacity-100 transition-opacity" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/></svg>
-                  </div>
-                  <label className="text-[14px] font-medium text-[#e5e2e1] cursor-pointer select-none" htmlFor="isSeller">Register as Seller</label>
-                </div>
-                
-                
+    const inputStyle = {
+        color: '#1b1c1a',
+        borderBottom: '1px solid #d0c5b5',
+        fontFamily: "'Inter', sans-serif"
+    };
 
-                {/* Actions */}
-                <div className="pt-[12px] flex flex-col gap-[12px]">
-                  <button className="w-full bg-[#ffd700] text-[#131313] font-semibold text-[16px] tracking-wide py-4 rounded hover:bg-[#e9c400] active:scale-[0.98] transition-all duration-200" type="submit">
-                    Create Account
-                  </button>
+    const handleFocus = (e) => { e.target.style.borderBottomColor = '#C9A96E'; };
+    const handleBlur = (e) => { e.target.style.borderBottomColor = '#d0c5b5'; };
 
-                  <ContinueWithGoogle />
-                  
-                  <div className="text-center mt-[12px]">
-                    <span className="text-[16px] text-[#d0c6ab]">Already have an account? </span>
-                    <a className="text-[16px] text-[#ffd700] hover:text-[#e9c400] transition-colors font-medium ml-1" href="/login">Sign In</a>
-                  </div>
+    return (
+        <>
+            {/* Google Fonts */}
+            <link
+                href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@300;400;500;600&display=swap"
+                rel="stylesheet"
+            />
+
+            <div
+                className="min-h-screen flex flex-col lg:flex-row selection:bg-[#C9A96E]/30"
+                style={{ backgroundColor: '#fbf9f6', fontFamily: "'Inter', sans-serif" }}
+            >
+                {/* ── LEFT: Editorial Image Panel ── */}
+                <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden" style={{ backgroundColor: '#f5f3f0' }}>
+                    <img
+                        src="/snitch_editorial_warm.png"
+                        alt="Snitch Fashion Editorial"
+                        className="absolute inset-0 w-full h-full object-cover object-top"
+                        style={{ filter: 'brightness(0.97)' }}
+                    />
+                    <div
+                        className="absolute inset-0"
+                        style={{ background: 'linear-gradient(to top, rgba(27,24,20,0.62) 0%, rgba(27,24,20,0.08) 45%, transparent 100%)' }}
+                    />
+                    <div className="absolute inset-0 p-14 flex flex-col justify-between z-10">
+                        <span
+                            className="text-sm font-medium tracking-[0.35em] uppercase"
+                            style={{ fontFamily: "'Cormorant Garamond', serif", color: '#C9A96E' }}
+                        >
+                            Snitch.
+                        </span>
+                        <div>
+                            <p
+                                className="text-5xl xl:text-6xl font-light leading-[1.08] text-white mb-5"
+                                style={{ fontFamily: "'Cormorant Garamond', serif" }}
+                            >
+                                Define your<br />
+                                <em>aesthetic.</em>
+                            </p>
+                            <p className="text-sm font-light leading-relaxed max-w-xs" style={{ color: 'rgba(255,255,255,0.65)' }}>
+                                Join the exclusive movement of creators and brands redefining the modern fashion landscape.
+                            </p>
+                        </div>
+                    </div>
                 </div>
-              </form>
+
+                {/* ── RIGHT: Form Panel ── */}
+                <div
+                    className="w-full lg:w-1/2 flex items-center justify-center min-h-screen px-8 sm:px-14 lg:px-20 py-16 overflow-y-auto"
+                    style={{ backgroundColor: '#fbf9f6' }}
+                >
+                    <div className="w-full max-w-sm">
+
+                        {/* Mobile brand mark */}
+                        <div className="lg:hidden mb-14">
+                            <span
+                                className="text-sm tracking-[0.35em] uppercase"
+                                style={{ fontFamily: "'Cormorant Garamond', serif", color: '#C9A96E' }}
+                            >
+                                Snitch.
+                            </span>
+                        </div>
+
+                        {/* Header */}
+                        <div className="mb-12">
+                            <p
+                                className="text-[10px] uppercase tracking-[0.22em] mb-4 font-medium"
+                                style={{ color: '#C9A96E' }}
+                            >
+                                Welcome to Snitch
+                            </p>
+                            <h1
+                                className="text-[2.6rem] xl:text-5xl font-light leading-[1.1]"
+                                style={{ fontFamily: "'Cormorant Garamond', serif", color: '#1b1c1a' }}
+                            >
+                                Elevate Your Style
+                            </h1>
+                        </div>
+
+                        {/* Form */}
+                        <form onSubmit={handleSubmit} className="flex flex-col gap-9">
+
+                            {/* Full Name */}
+                            <div className="flex flex-col gap-2">
+                                <label
+                                    htmlFor="reg-fullName"
+                                    className="text-[10px] uppercase tracking-[0.18em] font-medium"
+                                    style={{ color: '#7A6E63' }}
+                                >
+                                    Full Name
+                                </label>
+                                <input
+                                    id="reg-fullName"
+                                    type="text"
+                                    name="fullName"
+                                    value={formData.fullName}
+                                    onChange={handleChange}
+                                    required
+                                    placeholder="e.g. John Doe"
+                                    className="w-full bg-transparent outline-none py-3 text-sm transition-colors duration-300"
+                                    style={inputStyle}
+                                    onFocus={handleFocus}
+                                    onBlur={handleBlur}
+                                />
+                            </div>
+
+                            {/* Contact Number */}
+                            <div className="flex flex-col gap-2">
+                                <label
+                                    htmlFor="reg-contact"
+                                    className="text-[10px] uppercase tracking-[0.18em] font-medium"
+                                    style={{ color: '#7A6E63' }}
+                                >
+                                    Contact Number
+                                </label>
+                                <input
+                                    id="reg-contact"
+                                    type="tel"
+                                    name="contactNumber"
+                                    value={formData.contactNumber}
+                                    onChange={handleChange}
+                                    required
+                                    placeholder="+91 98765 43210"
+                                    className="w-full bg-transparent outline-none py-3 text-sm transition-colors duration-300"
+                                    style={inputStyle}
+                                    onFocus={handleFocus}
+                                    onBlur={handleBlur}
+                                />
+                            </div>
+
+                            {/* Email */}
+                            <div className="flex flex-col gap-2">
+                                <label
+                                    htmlFor="reg-email"
+                                    className="text-[10px] uppercase tracking-[0.18em] font-medium"
+                                    style={{ color: '#7A6E63' }}
+                                >
+                                    Email Address
+                                </label>
+                                <input
+                                    id="reg-email"
+                                    type="email"
+                                    name="email"
+                                    value={formData.email}
+                                    onChange={handleChange}
+                                    required
+                                    placeholder="hello@example.com"
+                                    className="w-full bg-transparent outline-none py-3 text-sm transition-colors duration-300"
+                                    style={inputStyle}
+                                    onFocus={handleFocus}
+                                    onBlur={handleBlur}
+                                />
+                            </div>
+
+                            {/* Password */}
+                            <div className="flex flex-col gap-2">
+                                <label
+                                    htmlFor="reg-password"
+                                    className="text-[10px] uppercase tracking-[0.18em] font-medium"
+                                    style={{ color: '#7A6E63' }}
+                                >
+                                    Password
+                                </label>
+                                <input
+                                    id="reg-password"
+                                    type="password"
+                                    name="password"
+                                    value={formData.password}
+                                    onChange={handleChange}
+                                    required
+                                    placeholder="••••••••"
+                                    className="w-full bg-transparent outline-none py-3 text-sm transition-colors duration-300"
+                                    style={inputStyle}
+                                    onFocus={handleFocus}
+                                    onBlur={handleBlur}
+                                />
+                            </div>
+
+                            {/* Register as Seller — minimal checkbox */}
+                            <label
+                                htmlFor="reg-isSeller"
+                                className="flex items-center gap-4 cursor-pointer group"
+                            >
+                                <div className="relative flex-shrink-0">
+                                    <input
+                                        id="reg-isSeller"
+                                        type="checkbox"
+                                        name="isSeller"
+                                        checked={formData.isSeller}
+                                        onChange={handleChange}
+                                        className="peer sr-only"
+                                    />
+                                    {/* Custom checkbox */}
+                                    <div
+                                        className="w-4 h-4 border transition-all duration-200 flex items-center justify-center peer-checked:border-[#C9A96E]"
+                                        style={{
+                                            borderColor: formData.isSeller ? '#C9A96E' : '#d0c5b5',
+                                            backgroundColor: formData.isSeller ? '#C9A96E' : 'transparent'
+                                        }}
+                                    >
+                                        {formData.isSeller && (
+                                            <svg className="w-2.5 h-2.5" viewBox="0 0 12 12" fill="none">
+                                                <path d="M2 6l3 3 5-5" stroke="#fbf9f6" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                            </svg>
+                                        )}
+                                    </div>
+                                </div>
+                                <span
+                                    className="text-[11px] uppercase tracking-[0.15em] transition-colors duration-200"
+                                    style={{ color: formData.isSeller ? '#C9A96E' : '#7A6E63' }}
+                                >
+                                    Register as Seller
+                                </span>
+                            </label>
+
+                            {/* Sign Up Button */}
+                            <button
+                                type="submit"
+                                className="w-full py-4 text-[11px] uppercase tracking-[0.25em] font-medium transition-all duration-300 mt-2"
+                                style={{ backgroundColor: '#1b1c1a', color: '#fbf9f6', fontFamily: "'Inter', sans-serif" }}
+                                onMouseEnter={e => {
+                                    e.currentTarget.style.backgroundColor = '#C9A96E';
+                                    e.currentTarget.style.color = '#1b1c1a';
+                                }}
+                                onMouseLeave={e => {
+                                    e.currentTarget.style.backgroundColor = '#1b1c1a';
+                                    e.currentTarget.style.color = '#fbf9f6';
+                                }}
+                            >
+                                Sign Up
+                            </button>
+
+                            {/* Divider */}
+                            <div className="flex items-center gap-4">
+                                <div className="flex-1 h-px" style={{ backgroundColor: '#e4e2df' }} />
+                                <span className="text-[10px] uppercase tracking-[0.15em]" style={{ color: '#B5ADA3' }}>or</span>
+                                <div className="flex-1 h-px" style={{ backgroundColor: '#e4e2df' }} />
+                            </div>
+
+                            {/* Google SSO */}
+                            <ContinueWithGoogle />
+
+                            {/* Footer Link */}
+                            <p className="text-center text-[11px]" style={{ color: '#B5ADA3' }}>
+                                Already have an account?{' '}
+                                <a
+                                    href="/login"
+                                    className="transition-colors duration-200"
+                                    style={{ color: '#7A6E63', textDecoration: 'underline', textUnderlineOffset: '3px' }}
+                                    onMouseEnter={e => e.target.style.color = '#C9A96E'}
+                                    onMouseLeave={e => e.target.style.color = '#7A6E63'}
+                                >
+                                    Sign in
+                                </a>
+                            </p>
+                        </form>
+                    </div>
+                </div>
             </div>
-          </div>
-        </div>
-      </main>
-    </div>
-  );
+        </>
+    );
 };
 
 export default Register;

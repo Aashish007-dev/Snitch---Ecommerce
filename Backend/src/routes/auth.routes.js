@@ -1,6 +1,7 @@
 import express from "express";
 import { config } from "../config/config.js";
 import {
+  getMeController,
   googleCallback,
   loginController,
   registerController,
@@ -10,6 +11,7 @@ import {
   validateLoginUser,
 } from "../validator/auth.validator.js";
 import passport from "passport";
+import { authenticateUser } from "../middlewares/auth.middleware.js";
 
 const authRouter = express.Router();
 
@@ -30,5 +32,8 @@ authRouter.get(
   }),
   googleCallback,
 );
+
+
+authRouter.get("/me", authenticateUser, getMeController);
 
 export default authRouter;
