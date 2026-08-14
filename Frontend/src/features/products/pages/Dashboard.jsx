@@ -309,7 +309,7 @@ const Dashboard = () => {
                     ) : (
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 24 }}>
                             {filtered.map((product, i) => (
-                                <div key={product._id} style={{ animation: `fadeUp 0.45s ease ${i * 0.07}s both` }}>
+                                <div onClick={() => navigate(`/seller/product/${product._id}`)} key={product._id} style={{ animation: `fadeUp 0.45s ease ${i * 0.07}s both`, cursor: 'pointer' }}>
                                     <ProductCard product={product} />
                                 </div>
                             ))}
@@ -321,4 +321,4 @@ const Dashboard = () => {
     );
 };
 
-export default Dashboard;
+export default Dashboard;
