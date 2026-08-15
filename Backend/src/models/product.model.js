@@ -1,86 +1,69 @@
 import mongoose from "mongoose";
+import priceSchema from "./price.schema.js";
 
-const productSchema = new mongoose.Schema({
+const productSchema = new mongoose.Schema(
+  {
     title: {
-        type: String,
-        required: true
+      type: String,
+      required: true,
     },
     description: {
-        type: String,
-        required: true
+      type: String,
+      required: true,
     },
     seller: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "user",
-        required: true
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "user",
+      required: true,
     },
-
     price: {
-        amount: {
-            type:Number,
-            required: true
-        },
-        currency: {
-            type: String,
-            enum: ["USD", "EUR", "GBP", "JPY", "INR"],
-            default: "INR",
-            required: true
-        }
+      type: priceSchema,
+      required: true,
     },
 
     images: [
-        {
-            url: {
-                type: String,
-                required: true
-            },
+      {
+        url: {
+          type: String,
+          required: true,
+        },
 
-            // alt: {
-            //     type: String,
-            //     required: true
-            // }
-        }
+        // alt: {
+        //     type: String,
+        //     required: true
+        // }
+      },
     ],
 
     variants: [
-        {
-            images: [
-                {
-                    url: {
-                        type: String,
-                        required: true
-                    }
-                }
-            ],
-
-            stock: {
-                type: Number,
-                default: 0
+      {
+        images: [
+          {
+            url: {
+              type: String,
+              required: true,
             },
+          },
+        ],
 
-            attributes: {
-                type: Map,
-                of: String
-            },
+        stock: {
+          type: Number,
+          default: 0,
+        },
 
-            price: {
-            amount: {
-                type: Number,
-                required: true
-            },
-            currency: {
-                type: String,
-                enum: ["USD", "EUR", "GBP", "JPY", "INR"],
-                default: "INR",
-                required: true
-            }
-        }
+        attributes: {
+          type: Map,
+          of: String,
+        },
 
-        }
-        
-    ]
-}, {timestamps: true});
-
+        price: {
+          type: priceSchema
+        },
+      },
+    ],
+  },
+  { timestamps: true },
+);
 
 const productModel = mongoose.model("product", productSchema);
 
