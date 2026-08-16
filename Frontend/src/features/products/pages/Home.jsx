@@ -86,6 +86,7 @@ const ProductCard = ({ product }) => {
                         </button>
                     </>
                 ) : (
+                
                     <div style={{ width: '100%', height: '100%', display: 'grid', placeItems: 'center' }}>
                         <span style={{ fontSize: 36, opacity: 0.18 }}>🖼</span>
                     </div>
@@ -178,66 +179,6 @@ const Home = () => {
             `}</style>
 
             <div style={{ minHeight: '100vh', background: '#fbf9f6', fontFamily: "'Inter', sans-serif" }}>
-
-                {/* ══ NAV ══════════════════════════════════════════ */}
-                <header style={{
-                    position: 'sticky', top: 0, zIndex: 100,
-                    background: 'rgba(251,249,246,0.92)', backdropFilter: 'blur(14px)',
-                    borderBottom: '1px solid #ede8e0',
-                    display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                    padding: '0 48px', height: 68,
-                }}>
-                    <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 16, letterSpacing: '0.38em', textTransform: 'uppercase', color: '#C9A96E' }}>
-                        Snitch.
-                    </span>
-
-                    <nav style={{ display: 'flex', gap: 36, alignItems: 'center' }}>
-                        <span style={{ fontSize: 11, letterSpacing: '0.18em', textTransform: 'uppercase', color: '#1b1c1a', fontWeight: 500, borderBottom: '1px solid #C9A96E', paddingBottom: 2 }}>
-                            Shop
-                        </span>
-
-                        {!authLoading && (
-                            user ? (
-                                <>
-                                    {user.role === 'seller' && (
-                                        <button
-                                            onClick={() => navigate('/seller/dashboard')}
-                                            style={{ fontSize: 11, letterSpacing: '0.18em', textTransform: 'uppercase', color: '#7A6E63', background: 'none', border: 'none', cursor: 'pointer', fontFamily: "'Inter', sans-serif", transition: 'color 0.2s' }}
-                                            onMouseEnter={e => e.currentTarget.style.color = '#C9A96E'}
-                                            onMouseLeave={e => e.currentTarget.style.color = '#7A6E63'}
-                                        >
-                                            My Store
-                                        </button>
-                                    )}
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                                        <div style={{ width: 30, height: 30, borderRadius: '50%', background: '#1b1c1a', display: 'grid', placeItems: 'center' }}>
-                                            <span style={{ fontSize: 12, color: '#C9A96E', fontFamily: "'Cormorant Garamond', serif", fontWeight: 500 }}>
-                                                {user.fullname?.charAt(0)?.toUpperCase() ?? '?'}
-                                            </span>
-                                        </div>
-                                        <span style={{ fontSize: 11, color: '#7A6E63', letterSpacing: '0.05em' }}>
-                                            {user.fullname?.split(' ')[0]}
-                                        </span>
-                                    </div>
-                                </>
-                            ) : (
-                                <button
-                                    onClick={() => navigate('/login')}
-                                    style={{
-                                        padding: '9px 24px', background: '#1b1c1a', color: '#fbf9f6',
-                                        border: 'none', fontSize: 10, letterSpacing: '0.22em', textTransform: 'uppercase',
-                                        cursor: 'pointer', fontFamily: "'Inter', sans-serif",
-                                        transition: 'background 0.2s, color 0.2s',
-                                    }}
-                                    onMouseEnter={e => { e.currentTarget.style.background = '#C9A96E'; e.currentTarget.style.color = '#1b1c1a' }}
-                                    onMouseLeave={e => { e.currentTarget.style.background = '#1b1c1a'; e.currentTarget.style.color = '#fbf9f6' }}
-                                >
-                                    Sign In
-                                </button>
-                            )
-                        )}
-                    </nav>
-                </header>
 
                 {/* ══ HERO ═════════════════════════════════════════ */}
                 <section style={{ position: 'relative', height: 'min(72vh, 640px)', overflow: 'hidden', background: '#1b1c1a' }}>

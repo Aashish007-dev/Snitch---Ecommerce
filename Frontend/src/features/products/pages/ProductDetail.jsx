@@ -169,29 +169,6 @@ const ProductDetail = () => {
 
             <div className="min-h-screen bg-[#fbf9f6]" style={{ fontFamily: "'Inter', sans-serif" }}>
 
-                {/* ── Sticky Nav ── */}
-                <header className="sticky top-0 z-50 flex items-center justify-between px-10 h-16 border-b border-[#ede8e0] bg-[rgba(251,249,246,0.92)] backdrop-blur-md">
-                    <span
-                        className="text-[#C9A96E] tracking-[0.38em] uppercase cursor-pointer select-none"
-                        style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 15 }}
-                        onClick={() => navigate('/')}
-                    >
-                        Snitch.
-                    </span>
-
-                    <nav className="flex items-center gap-8">
-                        <button
-                            onClick={() => navigate('/')}
-                            className="flex items-center gap-2 text-[11px] tracking-[0.18em] uppercase text-[#7A6E63] hover:text-[#C9A96E] transition-colors duration-200"
-                        >
-                            <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
-                            </svg>
-                            Back to Shop
-                        </button>
-                    </nav>
-                </header>
-
                 {/* ── Breadcrumb ── */}
                 {!loading && product && (
                     <div className="max-w-6xl mx-auto px-6 pt-6">

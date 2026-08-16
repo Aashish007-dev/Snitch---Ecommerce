@@ -171,11 +171,6 @@ const SellerProductDetails = () => {
 
   return (
     <div className="min-h-screen bg-[#fbf9f6] text-[#1b1c1a] font-sans pb-24">
-      {/* Top Banner / Header */}
-      <header className="sticky top-0 z-10 bg-[#fbf9f6]/80 backdrop-blur-md px-6 py-4 flex items-center justify-between">
-        <h1 className="font-serif text-xl tracking-wide uppercase">{product.title?.substring(0, 20)}{product.title?.length > 20 ? '...' : ''}</h1>
-      </header>
-
       <main className="max-w-6xl mx-auto px-4 md:px-8 mt-8">
 
         {/* Base Product Info */}

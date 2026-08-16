@@ -33,3 +33,12 @@ export async function getMe () {
     const response = await authApiInstance.get("/me");
     return response.data;
 }
+
+export async function logout () {
+    try {
+        const response = await authApiInstance.post("/logout");
+        return response.data;
+    } catch {
+        return null;
+    }
+}

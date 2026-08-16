@@ -1,4 +1,4 @@
-﻿import React, { useState, useRef } from 'react'
+import React, { useState, useRef } from 'react'
 import { useNavigate } from 'react-router'
 import { useProduct } from '../hook/useProduct'
 
@@ -188,27 +188,6 @@ const CreateProduct = () => {
       `}</style>
 
       <div style={{ minHeight: '100vh', background: '#fbf9f6', fontFamily: "'Inter', sans-serif" }}>
-
-        <header style={{
-          position: 'sticky', top: 0, zIndex: 50,
-          background: 'rgba(251,249,246,0.92)', backdropFilter: 'blur(12px)',
-          borderBottom: '1px solid #ede8e0',
-          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-          padding: '0 40px', height: 64,
-        }}>
-          <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 15, letterSpacing: '0.35em', textTransform: 'uppercase', color: '#C9A96E' }}>
-            Snitch.
-          </span>
-          <button
-            type="button"
-            onClick={() => navigate('/seller/dashboard')}
-            style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'none', border: 'none', cursor: 'pointer', fontSize: 11, letterSpacing: '0.18em', textTransform: 'uppercase', color: '#7A6E63', fontFamily: "'Inter', sans-serif", transition: 'color 0.2s' }}
-            onMouseEnter={e => e.currentTarget.style.color = '#C9A96E'}
-            onMouseLeave={e => e.currentTarget.style.color = '#7A6E63'}
-          >
-            <IconArrowLeft /> Dashboard
-          </button>
-        </header>
 
         <div style={{ background: '#1b1c1a', padding: '48px 40px 40px' }}>
           <p style={{ fontSize: 10, letterSpacing: '0.28em', textTransform: 'uppercase', color: '#C9A96E', margin: '0 0 8px' }}>Seller portal</p>
