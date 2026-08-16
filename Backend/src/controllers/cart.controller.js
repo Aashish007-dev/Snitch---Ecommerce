@@ -138,3 +138,73 @@ export const incrementCartItemQuantityController = async (req, res) => {
     })
     
 }
+
+
+export const decrementCartItemQuantityController = async (req, res) => {
+    const { productId, variantId } = req.params;
+
+    const product = await productModel.findOne({
+        _id: productId,
+        "variants._id": variantId
+    });
+
+    if (!product) {
+        return res.status(404).json({
+            success: false,
+            message: "Product or variant not found"
+        });
+    }
+
+    const cart = await cartModel.findOne({
+        user: req.user._id
+    });
+
+    if (!cart) {
+        return res.status(404).json({
+            success: false,
+            message: "Cart not found"
+        });
+    }
+
+    const item = cart.items.find(
+        item =>
+            item.product.toString() === productId &&
+            item.variant?.toString() === variantId
+    );
+
+    if (!item) {
+        return res.status(404).json({
+            success: false,
+            message: "Product or variant not found in cart"
+        });
+    }
+
+    // Don't allow quantity to go below 1
+    if (item.quantity <= 1) {
+        return res.status(400).json({
+            success: false,
+            message: "Cart item quantity cannot be less than 1"
+        });
+    }
+
+    await cartModel.findOneAndUpdate(
+        {
+            user: req.user._id,
+            "items.product": productId,
+            "items.variant": variantId
+        },
+        {
+            $inc: {
+                "items.$.quantity": -1
+            }
+        },
+        {
+            new: true
+        }
+    );
+
+    return res.status(200).json({
+        success: true,
+        message: "Cart item quantity decremented successfully."
+    });
+};
