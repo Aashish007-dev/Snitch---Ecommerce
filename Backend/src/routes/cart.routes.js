@@ -1,7 +1,7 @@
 import express from 'express';
 import { authenticateUser } from '../middlewares/auth.middleware.js';
 import { validateAddToCart } from '../validator/cart.validator.js';
-import { addToCartController } from '../controllers/cart.controller.js';
+import { addToCartController, getCartController } from '../controllers/cart.controller.js';
 
 const cartRouter = express.Router();
 
@@ -14,6 +14,11 @@ const cartRouter = express.Router();
 
 cartRouter.post("/add/:productId/:variantId", authenticateUser, validateAddToCart, addToCartController);
 
+// @route GET /api/cart/
+// @description Get user's cart
+// @access Private
+
+cartRouter.get("/", authenticateUser, getCartController);
 
 
 export default cartRouter;

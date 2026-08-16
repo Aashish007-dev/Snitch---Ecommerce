@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router'
 import { useProduct } from '../hook/useProduct'
+import { useCart } from '../../cart/hook/useCart'
 
 /* ── helpers ──────────────────────────────────────────────────── */
 const fmt = (amount, currency = 'INR') =>
@@ -36,7 +37,8 @@ const SkeletonDetail = () => (
 const ProductDetail = () => {
     const { productId } = useParams()
     const navigate = useNavigate()
-    const { handleGetProductById } = useProduct()
+    const { handleGetProductById } = useProduct();
+    const {handleAddItem} = useCart();
 
     const [product, setProduct] = useState(null)
     const [loading, setLoading] = useState(true)
@@ -466,6 +468,7 @@ const ProductDetail = () => {
                             <div className="flex flex-col gap-3">
                                 {/* Add to Cart */}
                                 <button
+                                    onClick={() => {handleAddItem({productId: product._id, variantId: selectedVariant._id})}}
                                     id="pd-add-to-cart"
                                     disabled={isOutOfStock}
                                     className={[
