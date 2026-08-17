@@ -213,8 +213,20 @@ export const removeCartItemController = async (req, res) => {
         });
     }
 
-    const originalLength = cart.items.length;
+    const itemExists = cart.items.some(
+        item =>
+            item.product.toString() === productId &&
+            item.variant?.toString() === variantId
+    );
 
+    if (!itemExists) {
+        return res.status(404).json({
+            success: false,
+            message: "Product variant not found in cart"
+        });
+    }
+
+    // Remove the item
     cart.items = cart.items.filter(
         item =>
             !(
@@ -223,17 +235,25 @@ export const removeCartItemController = async (req, res) => {
             )
     );
 
-    if (cart.items.length === originalLength) {
-        return res.status(404).json({
-            success: false,
-            message: "Product variant not found in cart"
+    // If no items are left, delete the entire cart
+    if (cart.items.length === 0) {
+        await cartModel.deleteOne({
+            _id: cart._id
+        });
+
+        return res.status(200).json({
+            success: true,
+            cartDeleted: true,
+            message: "Product removed and cart deleted successfully."
         });
     }
 
+    // Otherwise save the updated cart
     await cart.save();
 
     return res.status(200).json({
         success: true,
+        cartDeleted: false,
         message: "Product removed from cart successfully."
     });
 };

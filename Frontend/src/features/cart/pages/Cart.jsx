@@ -76,11 +76,12 @@ const Cart = () => {
                       product.images?.[0] ||
                       ''
 
-        // Price fallback: item price -> variant price -> product price -> 0
-        const unitPrice = item.price?.amount ??
-                          matchedVariant?.price?.amount ??
-                          product.price?.amount ??
-                          0
+        // Cart stored price (when added to cart) vs Live catalog price
+        const cartPrice = item.price?.amount
+        const livePrice = matchedVariant?.price?.amount ?? product.price?.amount
+
+        // Active unit price: live price if available, otherwise cart stored price
+        const unitPrice = livePrice ?? cartPrice ?? 0
 
         const currency = item.price?.currency ??
                          matchedVariant?.price?.currency ??
@@ -95,6 +96,12 @@ const Cart = () => {
 
         const quantity = item.quantity || 1
 
+        // Detect price fluctuations
+        const hasPriceChanged = typeof cartPrice === 'number' && typeof livePrice === 'number' && cartPrice !== livePrice
+        const isPriceDrop = hasPriceChanged && livePrice < cartPrice
+        const isPriceIncrease = hasPriceChanged && livePrice > cartPrice
+        const priceDifference = hasPriceChanged ? Math.abs(livePrice - cartPrice) : 0
+
         return {
             id: item._id,
             productId: product._id,
@@ -103,11 +110,18 @@ const Cart = () => {
             description: product.description || '',
             image,
             unitPrice,
+            cartPrice,
+            livePrice,
+            hasPriceChanged,
+            isPriceDrop,
+            isPriceIncrease,
+            priceDifference,
             currency,
             stock,
             attributes,
             quantity,
-            lineTotal: unitPrice * quantity
+            lineTotal: unitPrice * quantity,
+            matchedVariant
         }
     }
 
@@ -409,12 +423,19 @@ const Cart = () => {
 
                                                         {/* Unit & Line Price */}
                                                         <div className="text-right">
-                                                            <p
-                                                                className="text-xl font-medium text-[#1b1c1a]"
-                                                                style={{ fontFamily: "'Cormorant Garamond', serif" }}
-                                                            >
-                                                                {fmt(item.lineTotal, item.currency)}
-                                                            </p>
+                                                            <div className="flex items-baseline justify-end gap-2">
+                                                                {item.hasPriceChanged && (
+                                                                    <span className="text-xs line-through text-[#a89f91] font-normal">
+                                                                        {fmt(item.cartPrice * item.quantity, item.currency)}
+                                                                    </span>
+                                                                )}
+                                                                <p
+                                                                    className={`text-xl font-medium ${item.isPriceDrop ? 'text-emerald-700' : item.isPriceIncrease ? 'text-amber-800' : 'text-[#1b1c1a]'}`}
+                                                                    style={{ fontFamily: "'Cormorant Garamond', serif" }}
+                                                                >
+                                                                    {fmt(item.lineTotal, item.currency)}
+                                                                </p>
+                                                            </div>
                                                             {item.quantity > 1 && (
                                                                 <p className="text-[11px] text-[#7A6E63] font-light">
                                                                     {fmt(item.unitPrice, item.currency)} each
@@ -449,6 +470,27 @@ const Cart = () => {
                                                             </span>
                                                         )}
                                                     </div>
+
+                                                    {/* Price Change Notification Banner */}
+                                                    {item.hasPriceChanged && (
+                                                        <div className="mt-2.5">
+                                                            {item.isPriceDrop ? (
+                                                                <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-sm bg-emerald-50 border border-emerald-200/80 text-emerald-800 text-[11px] font-medium leading-normal">
+                                                                    <span className="text-xs">🏷️</span>
+                                                                    <span>
+                                                                        Price dropped! You save <strong className="font-semibold text-emerald-900">{fmt(item.priceDifference, item.currency)}</strong> per item. Get it now at <strong className="font-semibold text-emerald-900">{fmt(item.unitPrice, item.currency)}</strong> (was <span className="line-through opacity-75">{fmt(item.cartPrice, item.currency)}</span>)
+                                                                    </span>
+                                                                </div>
+                                                            ) : item.isPriceIncrease ? (
+                                                                <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-sm bg-amber-50 border border-amber-200/90 text-amber-800 text-[11px] font-medium leading-normal">
+                                                                    <span className="text-xs">⚠️</span>
+                                                                    <span>
+                                                                        Price increased by <strong className="font-semibold text-amber-900">{fmt(item.priceDifference, item.currency)}</strong>. Current price is <strong className="font-semibold text-amber-900">{fmt(item.unitPrice, item.currency)}</strong> (was <span className="line-through opacity-75">{fmt(item.cartPrice, item.currency)}</span>)
+                                                                    </span>
+                                                                </div>
+                                                            ) : null}
+                                                        </div>
+                                                    )}
                                                 </div>
 
                                                 {/* Actions & Quantity Stepper */}
