@@ -28,7 +28,7 @@ export async function decrementCartItemApi({ productId, variantId }) {
 
 export async function removeCartItemApi({ productId, variantId }) {
     try {
-        const response = await cartApiInstance.delete(`/item/${productId}/${variantId}`);
+        const response = await cartApiInstance.delete(`/quantity/remove/${productId}/${variantId}`);
         return response.data;
     } catch {
         return null;
