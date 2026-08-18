@@ -32,7 +32,7 @@ const Cart = () => {
         handleRemoveCartItem
     } = useCart()
 
-    const cartItems = useSelector(state => state.cart.items || [])
+    const cart= useSelector(state => state.cart || [])
     const user = useSelector(state => state.auth.user)
 
     const [loading, setLoading] = useState(true)
@@ -44,6 +44,7 @@ const Cart = () => {
     const [toastMessage, setToastMessage] = useState('')
     const [checkoutProcessing, setCheckoutProcessing] = useState(false)
 
+    console.log(cart)
     useEffect(() => {
         setLoading(true)
         handleGetCart()
@@ -57,17 +58,17 @@ const Cart = () => {
     }
 
     /* ── Helper to resolve item details from populated or nested structure ── */
-    const resolveCartItem = (item) => {
-        const product = item.product || {}
-        const variantId = (typeof item.variant === 'object' && item.variant?._id)
-            ? item.variant._id
-            : item.variant
+    const resolveCartItem = (cartItem) => {
+        const product = cartItem.product || {}
+        const variantId = (typeof cartItem.variant === 'object' && cartItem.variant?._id)
+            ? cartItem.variant._id
+            : cartItem.variant
 
         let matchedVariant = null
         if (variantId && Array.isArray(product.variants)) {
             matchedVariant = product.variants.find(v => v._id === variantId)
-        } else if (typeof item.variant === 'object' && item.variant?._id) {
-            matchedVariant = item.variant
+        } else if (typeof cartItem.variant === 'object' && cartItem.variant?._id) {
+            matchedVariant = cartItem.variant
         }
 
         // Image fallback: variant image -> product first image -> empty placeholder
@@ -77,13 +78,13 @@ const Cart = () => {
                       ''
 
         // Cart stored price (when added to cart) vs Live catalog price
-        const cartPrice = item.price?.amount
+        const cartPrice = cartItem.price?.amount
         const livePrice = matchedVariant?.price?.amount ?? product.price?.amount
 
         // Active unit price: live price if available, otherwise cart stored price
         const unitPrice = livePrice ?? cartPrice ?? 0
 
-        const currency = item.price?.currency ??
+        const currency = cartItem.price?.currency ??
                          matchedVariant?.price?.currency ??
                          product.price?.currency ??
                          'INR'
@@ -94,7 +95,7 @@ const Cart = () => {
         // Attributes (e.g. Color: Navy Blue, Size: L)
         const attributes = matchedVariant?.attributes || {}
 
-        const quantity = item.quantity || 1
+        const quantity = cartItem.quantity || 1
 
         // Detect price fluctuations
         const hasPriceChanged = typeof cartPrice === 'number' && typeof livePrice === 'number' && cartPrice !== livePrice
@@ -103,7 +104,7 @@ const Cart = () => {
         const priceDifference = hasPriceChanged ? Math.abs(livePrice - cartPrice) : 0
 
         return {
-            id: item._id,
+            id: cartItem._id,
             productId: product._id,
             variantId: variantId || matchedVariant?._id,
             title: product.title || 'Snitch Apparel',
@@ -125,7 +126,7 @@ const Cart = () => {
         }
     }
 
-    const parsedItems = cartItems.map(resolveCartItem)
+    const parsedItems = cart.items.map(resolveCartItem)
     const totalItemsCount = parsedItems.reduce((acc, item) => acc + item.quantity, 0)
     const subtotal = parsedItems.reduce((acc, item) => acc + item.lineTotal, 0)
 

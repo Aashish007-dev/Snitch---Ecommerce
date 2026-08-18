@@ -21,9 +21,9 @@ export async function incrementCartItemApi({ productId, variantId }) {
 }
 
 export async function decrementCartItemApi({ productId, variantId }) {
-        const response = await cartApiInstance.patch(`/quantity/decrement/${productId}/${variantId}`);
-        return response.data;
-    
+    const response = await cartApiInstance.patch(`/quantity/decrement/${productId}/${variantId}`);
+    return response.data;
+
 }
 
 export async function removeCartItemApi({ productId, variantId }) {
