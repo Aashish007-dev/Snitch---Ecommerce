@@ -34,3 +34,15 @@ export async function removeCartItemApi({ productId, variantId }) {
         return null;
     }
 }
+
+
+export async function createCartOrder() {
+    const response = await cartApiInstance.post("/payment/create/order");
+    return response.data;
+}
+
+
+export async function verifyCartOrder({ razorpay_order_id, razorpay_payment_id, razorpay_signature }) {
+    const response = await cartApiInstance.post("/payment/verify/order", { razorpay_order_id, razorpay_payment_id, razorpay_signature });
+    return response.data;
+}

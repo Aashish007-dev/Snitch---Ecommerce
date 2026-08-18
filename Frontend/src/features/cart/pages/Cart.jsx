@@ -2,6 +2,7 @@ import React, { useEffect, useState, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router'
 import { useCart } from '../hook/useCart'
+import { useRazorpay } from "react-razorpay";
 
 /* ── Currency Formatter ────────────────────────────────────────── */
 const fmt = (amount, currency = 'INR') =>
@@ -67,11 +68,15 @@ const Cart = () => {
         handleIncrementCartItem,
         handleDecrementCartItem,
         handleRemoveCartItem,
-        handleClearCart
+        handleClearCart,
+        handleCreateCartOrder,
+        handleVerifyCartOrder
     } = useCart()
 
     const rawCart = useSelector(state => state.cart)
     const user = useSelector(state => state.auth?.user)
+
+    const { error, isLoading, Razorpay } = useRazorpay();
 
     const [isInitialLoading, setIsInitialLoading] = useState(true)
     const [couponInput, setCouponInput] = useState('')
@@ -427,6 +432,58 @@ const Cart = () => {
     }
 
     const isBagEmpty = parsedItems.length === 0
+
+    async function handleCheckOut(){
+        const order = await handleCreateCartOrder();
+        console.log(order)
+
+    
+    const options = {
+      key: "rzp_test_TRDZAZQj2CSdTB",
+      amount: grandTotal * 100, // Amount in paise
+      currency: order.currency,
+      name: "Snitch-Ecommerce",
+      description: "Test Transaction",
+      order_id: order.id, // Generate order_id on server
+      handler: async (response) => {
+        const isValid = await handleVerifyCartOrder(response);
+        if(isValid){
+          const orderSummaryState = {
+            orderId: response?.razorpay_order_id,
+            paymentId: response?.razorpay_payment_id,
+            items: normalizedItems,
+            subtotal,
+            discountAmount,
+            shippingFee,
+            grandTotal,
+            appliedCoupon,
+            user: {
+              fullname: user?.fullname || 'Snitch Member',
+              email: user?.email,
+              contact: user?.contact
+            },
+            pincode,
+            deliveryCity: pincodeStatus?.city || 'Bengaluru'
+          };
+          handleClearCart();
+          navigate(`/order/success?order_id=${response?.razorpay_order_id}`, { state: orderSummaryState });
+        }
+      },
+      prefill: {
+        name: user?.fullname,
+        email: user?.email,
+        contact: user?.contact,
+      },
+      theme: {
+        color: '#F37254',
+      },
+    };
+
+    const razorpayInstance = new Razorpay(options);
+    razorpayInstance.open();
+        
+  
+}
 
     return (
         <>
@@ -1180,7 +1237,7 @@ const Cart = () => {
                                     <div className="mt-8 flex gap-3">
                                         <button
                                             type="button"
-                                            onClick={() => setCheckoutStep('payment')}
+                                            onClick={() => handleCheckOut()}
                                             className="w-full py-3.5 bg-[#141413] text-[#faf8f5] text-[11px] tracking-[0.24em] uppercase font-medium hover:bg-[#C9A96E] hover:text-[#141413] transition-colors rounded cursor-pointer"
                                         >
                                             Continue to Payment ({fmt(grandTotal)})

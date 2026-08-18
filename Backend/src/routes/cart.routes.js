@@ -1,7 +1,7 @@
 import express from 'express';
 import { authenticateUser } from '../middlewares/auth.middleware.js';
 import { validateAddToCart, validateIncrementCartItemQuantity } from '../validator/cart.validator.js';
-import { addToCartController, decrementCartItemQuantityController, getCartController, incrementCartItemQuantityController, removeCartItemController } from '../controllers/cart.controller.js';
+import { addToCartController, createOrderController, decrementCartItemQuantityController, getCartController, incrementCartItemQuantityController, removeCartItemController, verifyOrderController } from '../controllers/cart.controller.js';
 
 const cartRouter = express.Router();
 
@@ -46,5 +46,11 @@ cartRouter.patch("/quantity/decrement/:productId/:variantId", authenticateUser, 
 // @argument variantId - ID of the variant to update
 
 cartRouter.delete("/quantity/remove/:productId/:variantId", authenticateUser , removeCartItemController);
+
+// @route POST /api/cart/payment/create/order
+
+cartRouter.post("/payment/create/order", authenticateUser, createOrderController);
+
+cartRouter.post("/payment/verify/order", authenticateUser, verifyOrderController)
 
 export default cartRouter;
