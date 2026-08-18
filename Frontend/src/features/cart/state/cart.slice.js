@@ -1,12 +1,15 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const getIds = (item) => {
-    const variantId = (typeof item.variant === 'object' && item.variant?._id)
-        ? String(item.variant._id)
-        : String(item.variant || '');
+    const rawVariant = item.variant || item.product?.variants;
+    const variantId = (typeof rawVariant === 'object' && rawVariant?._id)
+        ? String(rawVariant._id)
+        : String(rawVariant || '');
+
     const productId = (typeof item.product === 'object' && item.product?._id)
         ? String(item.product._id)
         : String(item.product || '');
+
     return { productId, variantId };
 };
 
@@ -70,20 +73,6 @@ const cartSlice = createSlice({
                 return item;
             });
         },
-        updateCartItemQuantity: (state, action) => {
-            const { productId, variantId, quantity } = action.payload || {};
-            const pId = String(productId || '');
-            const vId = String(variantId || '');
-            const newQty = Math.max(1, Number(quantity) || 1);
-
-            state.items = state.items.map(item => {
-                const ids = getIds(item);
-                if (ids.productId === pId && (!vId || ids.variantId === vId)) {
-                    return { ...item, quantity: newQty };
-                }
-                return item;
-            });
-        },
         removeCartItem: (state, action) => {
             const { productId, variantId } = action.payload || {};
             const pId = String(productId || '');
@@ -109,7 +98,6 @@ export const {
     addItem,
     incrementCartItem,
     decrementCartItem,
-    updateCartItemQuantity,
     removeCartItem,
     clearCart
 } = cartSlice.actions;
