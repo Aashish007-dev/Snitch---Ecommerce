@@ -307,7 +307,7 @@ export const createOrderController = async (req, res) => {
     orderItems: cart.items.map((item) => ({
       title: item.product.title,
       productId: item.product._id,
-      variantId: item.varinat,
+      variantId: item.variantId,
       quantity: item.quantity,
       images: item.product.variants.images || item.product.images,
       description: item.product.description,
@@ -327,47 +327,49 @@ export const createOrderController = async (req, res) => {
 };
 
 export const verifyOrderController = async (req, res) => {
-  const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
-
+  const { razorpay_order_id, razorpay_payment_id, razorpay_signature } =
+    req.body;
 
   const payment = await paymentModel.findOne({
     "razorpay.orderId": razorpay_order_id,
-    status: "pending"
-  })
+    status: "pending",
+  });
 
-  if(!payment) {
-        return res.status(400).json({
-            success: false,
-            message: "Payment not found"
-        })
+  if (!payment) {
+    return res.status(400).json({
+      success: false,
+      message: "Payment not found",
+    });
   }
 
-  const isPaymentValid = validatePaymentVerification({
-    order_id: razorpay_order_id,
-    payment_id: razorpay_payment_id
-    
-  }, razorpay_signature, config.RAZORPAY_KEY_SECRET)
+  const isPaymentValid = validatePaymentVerification(
+    {
+      order_id: razorpay_order_id,
+      payment_id: razorpay_payment_id,
+    },
+    razorpay_signature,
+    config.RAZORPAY_KEY_SECRET,
+  );
 
-  if(!isPaymentValid) {
-        payment.status == "failed"
-        await payment.save();
+  if (!isPaymentValid) {
+    payment.status = "failed";
+    await payment.save();
 
-        return res.status(400).json({
-            success: false,
-            message: "Payment verification failed"
-        })
+    return res.status(400).json({
+      success: false,
+      message: "Payment verification failed",
+    });
   }
 
-  payment.status == "paid";
+  payment.status = "paid";
 
-  payment.razorpay.paymentId = razorpay_payment_id
-  payment.razorpay.signature = razorpay_signature
+  payment.razorpay.paymentId = razorpay_payment_id;
+  payment.razorpay.signature = razorpay_signature;
 
   await payment.save();
 
   return res.status(200).json({
     success: true,
-    message: "Payment verified successfully."
-  })
-
+    message: "Payment verified successfully.",
+  });
 };

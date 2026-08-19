@@ -41,10 +41,6 @@ export const routes = createBrowserRouter([
         element: <Protected role="buyer"><OrderSuccess /></Protected>
     },
     {
-        path: "/order-success",
-        element: <Protected role="buyer"><OrderSuccess /></Protected>
-    },
-    {
         path: "/seller",
         children: [
             {

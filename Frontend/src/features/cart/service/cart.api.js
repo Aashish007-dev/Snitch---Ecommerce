@@ -38,7 +38,7 @@ export async function removeCartItemApi({ productId, variantId }) {
 
 export async function createCartOrder() {
     const response = await cartApiInstance.post("/payment/create/order");
-    return response.data;
+    return response.data.order;
 }
 
 

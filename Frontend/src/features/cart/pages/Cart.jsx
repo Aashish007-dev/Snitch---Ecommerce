@@ -435,17 +435,16 @@ const Cart = () => {
 
     async function handleCheckOut(){
         const order = await handleCreateCartOrder();
-        console.log(order)
-
-    
+        // console.log(order)
     const options = {
       key: "rzp_test_TRDZAZQj2CSdTB",
-      amount: grandTotal * 100, // Amount in paise
+      amount: order.amount, // Amount in paise
       currency: order.currency,
       name: "Snitch-Ecommerce",
       description: "Test Transaction",
       order_id: order.id, // Generate order_id on server
       handler: async (response) => {
+        // console.log("RAZORPAY SUCCESS RESPONSE:", response);
         const isValid = await handleVerifyCartOrder(response);
         if(isValid){
           const orderSummaryState = {
@@ -466,8 +465,8 @@ const Cart = () => {
             deliveryCity: pincodeStatus?.city || 'Bengaluru'
           };
           handleClearCart();
-          navigate(`/order/success?order_id=${response?.razorpay_order_id}`, { state: orderSummaryState });
         }
+        navigate(`/order/success?order_id=${response?.razorpay_order_id}`, { state: orderSummaryState });
       },
       prefill: {
         name: user?.fullname,
